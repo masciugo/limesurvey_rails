@@ -1,0 +1,15 @@
+it:
+  activerecord:
+    models:
+      "limesurvey_rails/survey":
+        one: questionario
+        other: questionari
+    attributes:
+      "limesurvey_rails/survey":
+        title: titolo
+        language: lingua
+        active: attivo
+        token_sent: partecipanti invitati
+        token_count: partecipanti
+        complete_responses: questionari completati
+        
