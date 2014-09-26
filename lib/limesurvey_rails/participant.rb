@@ -28,6 +28,9 @@ module LimesurveyRails
         LimesurveyRails::SurveyParticipation.class_exec(self){ |klass| belongs_to :participant, :class_name => klass, :foreign_key => 'participant_id'}
         # LimesurveyRails::SurveyParticipation.belongs_to :participant, :class_name => self.name, :foreign_key => 'participant_id' 
 
+        # to make sure LimesurveyRails::SurveyParticipation model is connected to the same database of the is_a_limesurvey_participant class (in case of multi database apps)
+        LimesurveyRails::SurveyParticipation.establish_connection(connection_config) unless Rails.env.test? #... but during test it creates problems because SQLite only allow one connection 
+        
         # below the proof that among tests associated classes not get updated even after remove_const calls
         # see also http://code.activestate.com/lists/ruby-talk/42730/
         # puts (LimesurveyRails::SurveyParticipation.reflect_on_association(:participant).klass.object_id == self.object_id)
