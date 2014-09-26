@@ -1,6 +1,10 @@
 # LimesurveyRails
 
-TODO: Write a gem description
+A limesurvey plugin for Rails to make an ActiveRecord model able to participate to Limesurvey surveys
+
+## Premise
+
+This is a very very poor readme. I use this gem in my projects but I can't describe it better because I'm busy. But if anyone is interested just contact me 
 
 ## Installation
 
@@ -18,7 +22,11 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+In your participant model simply add
+
+  is_a_limesurvey_participant
+
+but there are many options ..
 
 ## Contributing
 
