@@ -19,7 +19,7 @@ module LimesurveyRails
 
         has_many :survey_participations, :class_name => "LimesurveyRails::SurveyParticipation", :foreign_key => "participant_id", :dependent => limesurvey_participant_dependent_participations  do
           def for_survey(survey_id)
-            res = where("survey_id == #{survey_id}")
+            res = where("survey_id = #{survey_id}")
             raise MultipleParticipationsToSurveyError if res.size > 1
             res.first
           end
