@@ -21,3 +21,6 @@ tmp
 *.a
 mkmf.log
 .ruby-version
+spec/dummy/db/test.sqlite3
+spec/dummy/log/development.log
+spec/dummy/log/test.log
