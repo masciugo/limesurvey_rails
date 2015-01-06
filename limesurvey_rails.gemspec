@@ -19,12 +19,12 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency(%q<rails>, ["~> 3.2.16"])
-  spec.add_runtime_dependency(%q<limesurvey>, [">= 0"])
+  spec.add_runtime_dependency(%q<limesurvey>, ["~> 1.0"])
 
-  spec.add_development_dependency(%q<rspec-rails>, [">= 0"])
-  spec.add_development_dependency(%q<rspec-its>, [">= 0"])
+  spec.add_development_dependency(%q<rspec-rails>, ["~> 3.0"])
+  spec.add_development_dependency(%q<rspec-its>, ["~> 1.0"])
   spec.add_development_dependency(%q<factory_girl_rails>, [">= 0"])
   spec.add_development_dependency(%q<sqlite3>, [">= 0"])
-  spec.add_development_dependency(%q<debugger>, [">= 0"])
-  spec.add_development_dependency(%q<awesome_print>, [">= 0"])
+  spec.add_development_dependency(%q<byebug>, [">= 3.0"])
+  spec.add_development_dependency('gem-release')
 end

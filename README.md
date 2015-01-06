@@ -22,11 +22,25 @@ Or install it yourself as:
 
 ## Usage
 
-In your participant model simply add
+In your participant model simply execute from your model class
 
-  is_a_limesurvey_participant
+    is_a_limesurvey_participant
 
 but there are many options ..
+
+## Test
+
+Because of [this](http://stackoverflow.com/posts/27786703) it's better run test separately (in a real scenario the *participant model* is expected to be initialized only once):
+
+    rake spec[main]
+    rake spec[survey]
+    rake spec[participant]
+    rake spec[participation]
+
+Reminder for further bug investigation:
+
+    rake spec[,25280] #failing test
+    rake spec[survey,25280] #passing test
 
 ## Contributing
 

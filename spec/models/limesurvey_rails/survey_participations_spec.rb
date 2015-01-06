@@ -1,14 +1,14 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 module LimesurveyRails
-  describe SurveyParticipation, :participation => true do
+  describe SurveyParticipation, :participation do
     
     subject { SurveyParticipation }
 
     before(:all) do
       configure_and_connect
       @test_survey_id = get_brand_new_test_survey_id(:activate_tokens => true)
-      reset_models
+      # reset_models # uncomment to run all suite test in one single run
       TestModel.is_a_limesurvey_participant :attribute_1_attr => "extra_id", :email_attr => 'email_address', :firstname_attr => 'name', :lastname_attr => 'surname'
     end 
     after(:all) { remove_all_test_surveys }

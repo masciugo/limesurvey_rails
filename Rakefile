@@ -27,6 +27,7 @@ RSpec::Core::RakeTask.new(:spec, :tag, :seed) do |t, task_args|
   t.rspec_opts = ''
   t.rspec_opts += " --tag #{task_args[:tag]}" unless task_args[:tag].blank?
   t.rspec_opts += " --seed #{task_args[:seed]}" unless task_args[:seed].blank?
+  t.rspec_opts += " --no-fail-fast"
 end
 
 desc "Run specfiles specified by pattern with optional seed"

@@ -2,10 +2,10 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 module LimesurveyRails
 
-  describe Survey, :survey => true do
+  describe Survey, :survey do
     before(:all) do
       configure_and_connect
-      reset_models
+      # reset_models # uncomment to run all suite test in one single run
       TestModel.is_a_limesurvey_participant :attribute_1_attr => "extra_id", :email_attr => 'email_address', :firstname_attr => 'name', :lastname_attr => 'surname'
     end
     after(:all) { remove_all_test_surveys }
@@ -98,11 +98,6 @@ module LimesurveyRails
       end
 
       describe "participants instance methods"  do
-        # before(:all) { reset_models; TestModel.is_a_limesurvey_participant :attribute_1_attr => "extra_id", :email_attr => 'email_address', :firstname_attr => 'name', :lastname_attr => 'surname'}
-        # before(:each) do
-        #   instances = FactoryGirl.create_list(:test_model,3)
-        #   instances.each{ |tm| FactoryGirl.create(:limesurvey_rails_survey_participation, :survey_id => test_survey.id, :participant_id => tm.id ) }
-        # end
 
         let(:a_participant) { FactoryGirl.create(:test_model) }
 

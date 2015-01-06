@@ -1,12 +1,12 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 module LimesurveyRails
-  describe TestModel, :participant  do
+  describe TestModel, :participant do
 
     before(:all) do
       configure_and_connect
       remove_all_test_surveys
-      reset_models
+      # reset_models # uncomment to run all suite test in one single run
       @test_survey_id = get_brand_new_test_survey_id(:activate_tokens => true)
     end 
     after(:all) { remove_all_test_surveys }
@@ -21,10 +21,10 @@ module LimesurveyRails
       its(:is_a_limesurvey_participant_class?) { is_expected.to be false }
     end
     
-    describe ".is_a_limesurvey_participant" do
-      before(:each) { reset_models }
+    describe ".is_a_limesurvey_participant", :wip do
       context "with no options" do
-        before(:each) do
+        before(:all) do
+          reset_models
           TestModel.is_a_limesurvey_participant
         end
         it "has many survey_participations" do
@@ -37,19 +37,22 @@ module LimesurveyRails
         its(:limesurvey_participant_lastname_attr) { is_expected.to be_nil }
       end
       context "with options :attribute_1_attr => 'other_id' " do
-        before(:each) do
+        before(:all) do
+          reset_models
           TestModel.is_a_limesurvey_participant(:attribute_1_attr => 'other_id')
         end
         its(:is_a_limesurvey_participant_class?) { is_expected.to be true }
         its(:limesurvey_participant_attribute_1_attr) { is_expected.to eq 'other_id' }
       end
       context "with options :email_attr => 'email_address', :firstname_attr => 'name', :lastname_attr => 'surname'  " do
-        before(:each) do
+        before(:all) do
+          reset_models
           TestModel.is_a_limesurvey_participant(:email_attr => 'email_address', :firstname_attr => 'name', :lastname_attr => 'surname')
         end
         its(:limesurvey_participant_email_attr) { is_expected.to eq 'email_address' }
         its(:limesurvey_participant_firstname_attr) { is_expected.to eq 'name' }
         its(:limesurvey_participant_lastname_attr) { is_expected.to eq 'surname' }
+        its(:limesurvey_participant_attribute_1_attr) { is_expected.to eq 'id' }
       end
     end
 

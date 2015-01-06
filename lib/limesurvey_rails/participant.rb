@@ -2,6 +2,40 @@ module LimesurveyRails
   
   module Participant
 
+    extend ActiveSupport::Concern
+
+    included do
+      # I put this here because I want limesurvey_participant class attribute to be available as soon as you include the gem
+      class_attribute :limesurvey_participant
+      self.limesurvey_participant = false
+      # instance methods
+      def add_to_survey(survey)
+        if survey.is_a? Survey
+          survey.add_participant(self)
+        else
+          raise WrongArgumentError, "expexted Survey object, got #{survey.class}"
+        end
+      end
+
+      def remove_from_survey(survey)
+        if survey.is_a? Survey
+          survey.remove_participant(self)
+        else
+          raise WrongArgumentError, "expexted Survey object, got #{survey.class}"
+        end
+      end
+
+      def surveys
+        survey_participations.map(&:survey)
+      end
+
+      def available_surveys
+        ids = surveys.map(&:id).map(&:to_s)
+        Survey.all.delete_if{|s| ids.include? s.id }
+      end
+
+    end
+
     module ClassMethods
       
       def is_a_limesurvey_participant(opts = {})
@@ -41,46 +75,7 @@ module LimesurveyRails
         limesurvey_participant
       end
     end
-    
-    module InstanceMethods
       
-      def add_to_survey(survey)
-        if survey.is_a? Survey
-          survey.add_participant(self)
-        else
-          raise WrongArgumentError, "expexted Survey object, got #{survey.class}"
-        end
-      end
-
-      def remove_from_survey(survey)
-        if survey.is_a? Survey
-          survey.remove_participant(self)
-        else
-          raise WrongArgumentError, "expexted Survey object, got #{survey.class}"
-        end
-      end
-
-      def surveys
-        survey_participations.map(&:survey)
-      end
-
-      def available_surveys
-        ids = surveys.map(&:id).map(&:to_s)
-        Survey.all.delete_if{|s| ids.include? s.id }
-      end
-
-    end
-    
-    def self.included(receiver)
-      
-      # I put this here because I want limesurvey_participant class attribute to be available as soon as you include the gem
-      receiver.class_attribute :limesurvey_participant
-      receiver.limesurvey_participant = false
-
-      receiver.extend         ClassMethods
-      receiver.send :include, InstanceMethods
-    end
-  
   end
 
   ActiveRecord::Base.send :include, Participant
