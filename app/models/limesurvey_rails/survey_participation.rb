@@ -37,7 +37,11 @@ module LimesurveyRails
         end
       end
     end
-     
+    
+    def to_s
+      "#{participant} (#{survey})"
+    end
+
     private
 
     def assign_ls_token_attributes

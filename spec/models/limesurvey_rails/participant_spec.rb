@@ -21,7 +21,7 @@ module LimesurveyRails
       its(:is_a_limesurvey_participant_class?) { is_expected.to be false }
     end
     
-    describe ".is_a_limesurvey_participant", :wip do
+    describe ".is_a_limesurvey_participant" do
       context "with no options" do
         before(:all) do
           reset_models
