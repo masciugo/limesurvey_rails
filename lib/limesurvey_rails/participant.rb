@@ -51,7 +51,7 @@ module LimesurveyRails
           self.send("#{class_attribute_name}=", (opts[k] or v))
         end
 
-        has_many :survey_participations, :class_name => "LimesurveyRails::SurveyParticipation", :foreign_key => "participant_id", :dependent => limesurvey_participant_dependent_participations, :include => :participant   do
+        has_many :survey_participations, :class_name => "LimesurveyRails::SurveyParticipation", :foreign_key => "participant_id", :dependent => limesurvey_participant_dependent_participations  do
           def for_survey(survey_id)
             res = where("survey_id = #{survey_id}")
             raise MultipleParticipationsToSurveyError if res.size > 1
