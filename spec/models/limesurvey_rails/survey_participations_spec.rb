@@ -108,7 +108,7 @@ module LimesurveyRails
       end
     end
 
-    describe "#to_s", :wip do
+    describe "#to_s" do
       let(:a_participation) { SurveyParticipation.create(:survey_id => test_survey.id, :participant_id => a_participant.id ) }
       it "returns a short description" do
         expect(a_participation.to_s).to eq "#{a_participant} (#{test_survey})"
