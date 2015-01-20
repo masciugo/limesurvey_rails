@@ -10,6 +10,7 @@ end
 
 def get_brand_new_test_survey_id(opts = {})
   id = LimesurveyRails.add_survey(nil,'LIMESURVEY_RAILS TEST','en')
+  # puts "created survey #{id}"
   LimesurveyRails.activate_tokens(id,['1']) if opts[:activate_tokens]
   id
 end

@@ -134,7 +134,7 @@ module LimesurveyRails
     private
 
     def self.build(survey_id, lang = nil)
-      all_attributes = {id: survey_id}
+      all_attributes = {id: survey_id.to_i}
       all_attributes.merge!(LimesurveyRails.get_survey_properties(survey_id,GET_SURVEY_PROPERTY_ATTRIBUTES))
       
       # if all_attributes['active'] == 'Y'

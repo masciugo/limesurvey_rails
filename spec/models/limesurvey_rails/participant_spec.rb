@@ -115,11 +115,9 @@ module LimesurveyRails
           expect(a_participant.surveys).to be_empty
         end
         context "when has added to a survey" do
-          before(:each) { SurveyParticipation.create(:survey_id => test_survey.id, :participant_id => a_participant.id ) }
-          it "returns an array with one element" do
-            expect(a_participant.surveys.size).to eq 1
-          end
-          it "and that element containing a Survey object" do
+          before(:each) { SurveyParticipation.create!(:survey_id => test_survey.id, :participant_id => a_participant.id ) }
+          it "returns an array with one element and that element containing a Survey object" do
+            expect(a_participant.surveys.size).to eq 1 and 
             expect(a_participant.surveys.first).to be_kind_of(Survey)
           end
           context "when has added to another survey" do

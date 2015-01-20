@@ -30,7 +30,7 @@ module LimesurveyRails
       end
 
       def available_surveys
-        ids = surveys.map(&:id).map(&:to_s)
+        ids = surveys.map(&:id)
         Survey.all.delete_if{|s| ids.include? s.id }
       end
 
