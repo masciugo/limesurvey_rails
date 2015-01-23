@@ -51,7 +51,7 @@ module LimesurveyRails
 
   def self.method_missing(method_name, *arguments, &block)
     if API_METHODS.include? method_name.to_s
-      if connected?
+      if api # was: if connected? which is more costly
         # t0=Time.now
         result = api.send(method_name, *arguments.unshift(session_key))
         # puts "#{method_name} in #{Time.now-t0}"
