@@ -28,12 +28,16 @@ module LimesurveyRails
     end
   end
 
-  def self.connected?
+  def self.connected?(verify = false)
     begin
       raise unless configured?
       raise unless session_key.present?
-      check_result = api.list_surveys(session_key)
-      raise unless check_result.is_a? Array or check_result['status'] == 'No surveys found'
+
+      if verify
+        check_result = api.list_surveys(session_key)
+        raise unless check_result.is_a? Array or check_result['status'] == 'No surveys found'
+      end
+
       true
     rescue Exception => e
       if configuration.try(:auto_connection)
@@ -65,6 +69,13 @@ module LimesurveyRails
             []
           when /(left to send)|(No candidate tokens)$/
             result # get regular result
+          when /Invalid session key$/
+            arguments.shift
+            if configuration.auto_connection and connect(true)
+              self.send(method_name, *arguments, &block)
+            else
+              raise RemoteControlError, 'you are disconnected from Limesurvey: Invalid session key'
+            end
           else
             raise RemoteControlError, "#{method_name} returned a failure response status: #{result["status"]}"
           end

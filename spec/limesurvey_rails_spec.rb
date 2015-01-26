@@ -80,6 +80,18 @@ describe LimesurveyRails, :main => true do
       describe ".wrong_name_method" do
         specify { expect { LimesurveyRails.wrong_name_method }.to raise_error }
       end
+      context "when it's session key becomes invalid/expired" do
+        before(:each) do
+          LimesurveyRails.session_key = 'wrong_session_key'
+        end
+        its(:connected?) { is_expected.to be true }
+        describe ".connected?(true)" do
+          specify { expect(LimesurveyRails.connected?(true)).to be false }
+        end
+        it "raise RemoteControlError claiming Invalid session key" do
+          expect { LimesurveyRails.list_surveys }.to raise_error(LimesurveyRails::RemoteControlError, /Invalid session key$/)
+        end
+      end
     end
     context "when it's configurated with continuous connection" do
       before(:each) do
@@ -88,6 +100,29 @@ describe LimesurveyRails, :main => true do
         end
       end
       its(:connected?) { is_expected.to be true }
+      describe ".connected?(true)" do
+        specify { expect(LimesurveyRails.connected?(true)).to be true }
+      end
+      context "when it is connected" do
+        before(:each) do
+          LimesurveyRails.connect
+        end
+        context "when it's session key becomes invalid/expired" do
+          before(:each) do
+            LimesurveyRails.session_key = 'wrong_session_key'
+          end
+          its(:connected?) { is_expected.to be true }
+          describe ".connected?(true)" do
+            specify { expect(LimesurveyRails.connected?(true)).to be true }
+          end
+          describe ".list_surveys" do
+            it "returns a correct result and LimesurveyRails gets a new session_key after reconnecting" do
+              expect(LimesurveyRails.list_surveys).to be_an(Array) and
+              expect(LimesurveyRails.session_key).not_to eq('wrong_session_key')
+            end
+          end
+        end
+      end
     end
   end
 
