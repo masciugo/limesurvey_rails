@@ -26,7 +26,7 @@ module LimesurveyRails
       end
 
       def surveys
-        survey__ids.map{|id| Survey.find(id) }
+        Survey.all.find_all{|s| survey__ids.include?(s.id)}
       end
 
       def survey__ids
@@ -34,11 +34,11 @@ module LimesurveyRails
       end
 
       def available_surveys
-        available_survey__ids.map{|id| Survey.find(id) }
+        Survey.all.find_all{|s| !survey__ids.include?(s.id)}
       end
 
       def available_survey__ids
-        Survey.all_ids - survey__ids
+        Survey.all.map(&:id) - survey__ids
       end
     end
 

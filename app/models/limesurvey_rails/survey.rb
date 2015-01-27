@@ -4,97 +4,7 @@ module LimesurveyRails
 
     LIST_SURVEYS_ATTRIBUTES = %w{ sid surveyls_title startdate expires active }
 
-    GET_SUMMARY_RESPONSES_ATTRIBUTES = %w{ completed_responses incomplete_responses full_responses }
-    GET_SUMMARY_TOKENS_ATTRIBUTES = %w{ token_count token_invalid token_sent token_opted_out token_completed }
-    GET_SUMMARY_ATTRIBUTES = GET_SUMMARY_RESPONSES_ATTRIBUTES + GET_SUMMARY_TOKENS_ATTRIBUTES
-    GET_SURVEY_PROPERTY_ATTRIBUTES = %w{
-      attributedescriptions
-      savetimings
-      allowprev
-      tokenanswerspersistence
-      showgroupinfo
-      showwelcome
-      owner_id
-      template
-      printanswers
-      assessments
-      shownoanswer
-      showprogress
-      admin
-      language
-      ipaddr
-      usecaptcha
-      showqnumcode
-      allowjumps
-      active
-      additional_languages
-      refurl
-      usetokens
-      bouncetime
-      navigationdelay
-      expires
-      datestamp
-      datecreated
-      bounce_email
-      bounceprocessing
-      nokeyboard
-      startdate
-      usecookie
-      publicstatistics
-      bounceaccounttype
-      alloweditaftercompletion
-      adminemail
-      allowregister
-      publicgraphs
-      emailresponseto
-      bounceaccounthost
-      googleanalyticsstyle
-      anonymized
-      allowsave
-      listpublic
-      emailnotificationto
-      bounceaccountpass
-      googleanalyticsapikey
-      faxto
-      autonumber_start
-      htmlemail
-      tokenlength
-      bounceaccountencryption
-      format
-      autoredirect
-      sendconfirmation
-      showxquestions
-      bounceaccountuser
-    }
-
-    GET_LANGUAGE_PROPERTIES_ATTRIBUTES = %w{
-      surveyls_survey_id
-      surveyls_url
-      surveyls_email_register_subj
-      email_admin_notification_subj
-      surveyls_language
-      surveyls_urldescription
-      surveyls_email_register
-      email_admin_notification
-      surveyls_title
-      surveyls_email_invite_subj
-      surveyls_email_confirm_subj
-      email_admin_responses_subj
-      surveyls_description
-      surveyls_email_invite
-      surveyls_email_confirm
-      email_admin_responses
-      surveyls_welcometext
-      surveyls_email_remind_subj
-      surveyls_dateformat
-      surveyls_numberformat
-      surveyls_endtext
-      surveyls_email_remind
-      surveyls_attributecaptions
-    }
-
-     
-    ALL_ATTRIBUTES = (GET_SUMMARY_ATTRIBUTES | GET_SURVEY_PROPERTY_ATTRIBUTES | GET_LANGUAGE_PROPERTIES_ATTRIBUTES ).sort.unshift('id')
+    ALL_ATTRIBUTES = LIST_SURVEYS_ATTRIBUTES.sort.unshift('id')
 
     attr_accessor *ALL_ATTRIBUTES
 
@@ -104,16 +14,15 @@ module LimesurveyRails
     validates_presence_of :surveyls_title
     validates_presence_of :language
 
-    def self.all(lang = nil)
-      all_ids.map{|id| build(id,lang) }
+    def self.all
+      LimesurveyRails.list_surveys.map do |s|
+        id = s.delete('sid').to_i
+        new({id: id}.merge(s))
+      end
     end
 
-    def self.all_ids
-      LimesurveyRails.list_surveys(LimesurveyRails.configuration.username).map{|s| s['sid'].to_i }
-    end
-
-    def self.find(survey_id,lang = nil)
-      build(survey_id,lang)
+    def self.find(survey_id)
+      self.all.find{|s| s.id == survey_id.to_i} or raise(RemoteControlError,"Invalid survey ID")
     end
 
     def self.add(title,lang)
@@ -216,23 +125,10 @@ module LimesurveyRails
     end
 
     def reload
-      Survey.build(id)
+      self.class.find(id)
     end
 
     private
-
-    def self.build(survey_id, lang = nil)
-      all_attributes = {id: survey_id.to_i}
-      all_attributes.merge!(LimesurveyRails.get_survey_properties(survey_id,GET_SURVEY_PROPERTY_ATTRIBUTES))
-      
-      # if all_attributes['active'] == 'Y'
-        all_attributes.merge!(LimesurveyRails.get_summary(survey_id,'all')) 
-      # else
-      #   GET_SUMMARY_TOKENS_ATTRIBUTES.each{|a| all_attributes[a] = LimesurveyRails.get_summary(survey_id,a) rescue nil }
-      # end
-      all_attributes.merge!(LimesurveyRails.get_language_properties(survey_id,GET_LANGUAGE_PROPERTIES_ATTRIBUTES,lang || all_attributes['language']))
-      new(all_attributes)
-    end
 
   end
 

@@ -203,8 +203,6 @@ module LimesurveyRails
             describe "survey"  do
               before(:each) { test_survey.invite_participants! }
               subject { test_survey.reload }
-              its(:token_count) { is_expected.to eq '3' }
-              its(:token_sent) { is_expected.to eq '2' }
             end
           end
         end
