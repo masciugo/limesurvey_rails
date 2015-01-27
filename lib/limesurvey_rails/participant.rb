@@ -26,14 +26,20 @@ module LimesurveyRails
       end
 
       def surveys
-        survey_participations.map(&:survey)
+        survey__ids.map{|id| Survey.find(id) }
+      end
+
+      def survey__ids
+        survey_participations.map(&:survey_id)
       end
 
       def available_surveys
-        ids = surveys.map(&:id)
-        Survey.all.delete_if{|s| ids.include? s.id }
+        available_survey__ids.map{|id| Survey.find(id) }
       end
 
+      def available_survey__ids
+        Survey.all_ids - survey__ids
+      end
     end
 
     module ClassMethods

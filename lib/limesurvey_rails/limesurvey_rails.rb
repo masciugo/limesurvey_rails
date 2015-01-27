@@ -6,7 +6,7 @@ module LimesurveyRails
   end
 
   def self.connect(force = false)
-    if !force and connected?
+    if !force and connected?(true)
       false
     else
       if configured?
@@ -29,23 +29,13 @@ module LimesurveyRails
   end
 
   def self.connected?(verify = false)
-    begin
-      raise unless configured?
-      raise unless session_key.present?
-
-      if verify
-        check_result = api.list_surveys(session_key)
-        raise unless check_result.is_a? Array or check_result['status'] == 'No surveys found'
-      end
-
-      true
-    rescue Exception => e
-      if configuration.try(:auto_connection)
-        connect(true)
-      else
-        false
-      end
+    return false unless configured?
+    return false unless session_key.present?
+    if verify 
+      check_result = api.list_surveys(session_key)
+      return false unless (check_result.is_a? Array or check_result['status'] == 'No surveys found')
     end
+    true
   end
 
   def self.reset
@@ -69,7 +59,7 @@ module LimesurveyRails
             []
           when /(left to send)|(No candidate tokens)$/
             result # get regular result
-          when /Invalid session key$/
+          when /Invalid session key$/ # ask for a new session key 
             arguments.shift
             if configuration.auto_connection and connect(true)
               self.send(method_name, *arguments, &block)

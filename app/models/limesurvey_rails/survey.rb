@@ -7,9 +7,93 @@ module LimesurveyRails
     GET_SUMMARY_RESPONSES_ATTRIBUTES = %w{ completed_responses incomplete_responses full_responses }
     GET_SUMMARY_TOKENS_ATTRIBUTES = %w{ token_count token_invalid token_sent token_opted_out token_completed }
     GET_SUMMARY_ATTRIBUTES = GET_SUMMARY_RESPONSES_ATTRIBUTES + GET_SUMMARY_TOKENS_ATTRIBUTES
-    GET_SURVEY_PROPERTY_ATTRIBUTES = %w{ attributedescriptions savetimings allowprev tokenanswerspersistence showgroupinfo showwelcome owner_id template printanswers assessments shownoanswer showprogress admin language ipaddr usecaptcha showqnumcode allowjumps active additional_languages refurl usetokens bouncetime navigationdelay expires datestamp datecreated bounce_email bounceprocessing nokeyboard startdate usecookie publicstatistics bounceaccounttype alloweditaftercompletion adminemail allowregister publicgraphs emailresponseto bounceaccounthost googleanalyticsstyle anonymized allowsave listpublic emailnotificationto bounceaccountpass googleanalyticsapikey faxto autonumber_start htmlemail tokenlength bounceaccountencryption format autoredirect sendconfirmation showxquestions bounceaccountuser }
-    GET_LANGUAGE_PROPERTIES_ATTRIBUTES = %w{ surveyls_survey_id surveyls_url surveyls_email_register_subj email_admin_notification_subj surveyls_language surveyls_urldescription surveyls_email_register email_admin_notification surveyls_title surveyls_email_invite_subj surveyls_email_confirm_subj email_admin_responses_subj surveyls_description surveyls_email_invite surveyls_email_confirm email_admin_responses surveyls_welcometext surveyls_email_remind_subj surveyls_dateformat surveyls_numberformat surveyls_endtext surveyls_email_remind surveyls_attributecaptions }
-    
+    GET_SURVEY_PROPERTY_ATTRIBUTES = %w{
+      attributedescriptions
+      savetimings
+      allowprev
+      tokenanswerspersistence
+      showgroupinfo
+      showwelcome
+      owner_id
+      template
+      printanswers
+      assessments
+      shownoanswer
+      showprogress
+      admin
+      language
+      ipaddr
+      usecaptcha
+      showqnumcode
+      allowjumps
+      active
+      additional_languages
+      refurl
+      usetokens
+      bouncetime
+      navigationdelay
+      expires
+      datestamp
+      datecreated
+      bounce_email
+      bounceprocessing
+      nokeyboard
+      startdate
+      usecookie
+      publicstatistics
+      bounceaccounttype
+      alloweditaftercompletion
+      adminemail
+      allowregister
+      publicgraphs
+      emailresponseto
+      bounceaccounthost
+      googleanalyticsstyle
+      anonymized
+      allowsave
+      listpublic
+      emailnotificationto
+      bounceaccountpass
+      googleanalyticsapikey
+      faxto
+      autonumber_start
+      htmlemail
+      tokenlength
+      bounceaccountencryption
+      format
+      autoredirect
+      sendconfirmation
+      showxquestions
+      bounceaccountuser
+    }
+
+    GET_LANGUAGE_PROPERTIES_ATTRIBUTES = %w{
+      surveyls_survey_id
+      surveyls_url
+      surveyls_email_register_subj
+      email_admin_notification_subj
+      surveyls_language
+      surveyls_urldescription
+      surveyls_email_register
+      email_admin_notification
+      surveyls_title
+      surveyls_email_invite_subj
+      surveyls_email_confirm_subj
+      email_admin_responses_subj
+      surveyls_description
+      surveyls_email_invite
+      surveyls_email_confirm
+      email_admin_responses
+      surveyls_welcometext
+      surveyls_email_remind_subj
+      surveyls_dateformat
+      surveyls_numberformat
+      surveyls_endtext
+      surveyls_email_remind
+      surveyls_attributecaptions
+    }
+
+     
     ALL_ATTRIBUTES = (GET_SUMMARY_ATTRIBUTES | GET_SURVEY_PROPERTY_ATTRIBUTES | GET_LANGUAGE_PROPERTIES_ATTRIBUTES ).sort.unshift('id')
 
     attr_accessor *ALL_ATTRIBUTES
@@ -21,7 +105,11 @@ module LimesurveyRails
     validates_presence_of :language
 
     def self.all(lang = nil)
-      LimesurveyRails.list_surveys(LimesurveyRails.configuration.username).map{|s| build(s['sid'],lang) }
+      all_ids.map{|id| build(id,lang) }
+    end
+
+    def self.all_ids
+      LimesurveyRails.list_surveys(LimesurveyRails.configuration.username).map{|s| s['sid'].to_i }
     end
 
     def self.find(survey_id,lang = nil)

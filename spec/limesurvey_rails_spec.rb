@@ -37,8 +37,8 @@ describe LimesurveyRails, :main => true do
     its(:configured?) {is_expected.to be true }
     describe 'LimesurveyRails.configuration' do
       subject { LimesurveyRails.configuration }
-      its(:username) {should eq('rails_user_test') }
-      its(:password) {should eq('limoncello') }
+      its(:username) {should eq(LIMESURVEY_USERNAME) }
+      its(:password) {should eq(LIMESURVEY_PASSWORD) }
       its(:base_url) {should eq(LIMESURVEY_BASE_URL) }
     end
     its(:connected?) { is_expected.to be false }
@@ -99,13 +99,17 @@ describe LimesurveyRails, :main => true do
           config.auto_connection = true
         end
       end
-      its(:connected?) { is_expected.to be true }
+      its(:connected?) { is_expected.to be false }
       describe ".connected?(true)" do
-        specify { expect(LimesurveyRails.connected?(true)).to be true }
+        specify { expect(LimesurveyRails.connected?(true)).to be false }
       end
       context "when it is connected" do
         before(:each) do
           LimesurveyRails.connect
+        end
+        its(:connected?) { is_expected.to be true }
+        describe ".connected?(true)" do
+          specify { expect(LimesurveyRails.connected?(true)).to be true }
         end
         context "when it's session key becomes invalid/expired" do
           before(:each) do
@@ -113,12 +117,13 @@ describe LimesurveyRails, :main => true do
           end
           its(:connected?) { is_expected.to be true }
           describe ".connected?(true)" do
-            specify { expect(LimesurveyRails.connected?(true)).to be true }
+            specify { expect(LimesurveyRails.connected?(true)).to be false }
           end
           describe ".list_surveys" do
             it "returns a correct result and LimesurveyRails gets a new session_key after reconnecting" do
               expect(LimesurveyRails.list_surveys).to be_an(Array) and
-              expect(LimesurveyRails.session_key).not_to eq('wrong_session_key')
+              expect(LimesurveyRails.session_key).not_to eq('wrong_session_key') and
+              expect(LimesurveyRails.connected?(true)).to be true
             end
           end
         end

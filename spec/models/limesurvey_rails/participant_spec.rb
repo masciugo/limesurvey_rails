@@ -104,7 +104,7 @@ module LimesurveyRails
           end
         end
       end
-      describe "#surveys" do
+      describe "#surveys", :wip do
         before(:all) do
           @another_test_survey_id = get_brand_new_test_survey_id(:activate_tokens => true)
           @another_more_test_survey_id = get_brand_new_test_survey_id(:activate_tokens => true)
@@ -120,17 +120,40 @@ module LimesurveyRails
             expect(a_participant.surveys.size).to eq 1 and 
             expect(a_participant.surveys.first).to be_kind_of(Survey)
           end
-          context "when has added to another survey" do
-            before(:each) { SurveyParticipation.create(:survey_id => another_test_survey.id, :participant_id => a_participant.id ) }
-            it "returns an array with two elements" do
-              expect(a_participant.surveys.size).to eq 2
+          describe "#survey__ids" do
+            it "returns an array with the id of the survey" do
+              expect(a_participant.survey__ids.size).to eq 1 and 
+              expect(a_participant.survey__ids.first).to eq test_survey.id
+            end
+          end
+          describe "#available_survey__ids" do
+            it "returns an array with the id of the remaining surveys" do
+              expect(a_participant.available_survey__ids).to match_array [another_more_test_survey.id, another_test_survey.id]
             end
           end
           describe "#available_surveys" do
             it "returns an array with two elements" do
-              expect(a_participant.available_surveys.size).to eq 2
+              expect(a_participant.available_surveys.map(&:id)).to match_array [another_more_test_survey.id, another_test_survey.id]
             end
           end
+          context "when has added to another survey" do
+            before(:each) { SurveyParticipation.create(:survey_id => another_test_survey.id, :participant_id => a_participant.id ) }
+            it "returns an array with two elements" do
+              expect(a_participant.surveys.map(&:id)).to match_array [test_survey.id, another_test_survey.id]
+            end
+            describe "#survey__ids" do
+              it "returns an array with the ids of the two surveys" do
+                expect(a_participant.survey__ids).to match_array [test_survey.id, another_test_survey.id]
+              end
+            end
+            describe "#available_survey__ids" do
+              it "returns an array with the id of the remaining surveys" do
+                expect(a_participant.available_survey__ids).to match_array [another_more_test_survey.id]
+              end
+            end
+
+          end
+
         end
       end
     end
