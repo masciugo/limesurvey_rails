@@ -59,7 +59,7 @@ module LimesurveyRails
             []
           when /(left to send)|(No candidate tokens)$/
             result # get regular result
-          when /Invalid session key$/ # ask for a new session key 
+          when /Invalid session key$/i # ask for a new session key 
             arguments.shift
             if configuration.auto_connection and connect(true)
               self.send(method_name, *arguments, &block)
