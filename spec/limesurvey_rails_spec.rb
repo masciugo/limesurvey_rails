@@ -1,18 +1,18 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe LimesurveyRails, :main => true do
-  after(:each) do
+  after do
     LimesurveyRails.reset
   end
 
   context "when it's not fully configured" do
-    before(:each) { LimesurveyRails.reset }
+    before { LimesurveyRails.reset }
     its(:configured?) { is_expected.to be false }
     its(:connected?) { is_expected.to be false }
   end
 
   context "when it's configured with a wrong password" do
-    before(:each) do
+    before do
       LimesurveyRails.configure do |config|
         config.api_url = LIMESURVEY_API_URL
         config.username = LIMESURVEY_USERNAME
@@ -27,7 +27,7 @@ describe LimesurveyRails, :main => true do
   end
 
   context "when it's fully configured" do
-    before(:each) do
+    before do
       LimesurveyRails.configure do |config|
         config.api_url = LIMESURVEY_API_URL
         config.username = LIMESURVEY_USERNAME
@@ -53,7 +53,7 @@ describe LimesurveyRails, :main => true do
       end
     end
     context "when it's connected" do
-      before(:each) do
+      before do
         LimesurveyRails.connect
       end
       describe ".connect" do
@@ -81,7 +81,7 @@ describe LimesurveyRails, :main => true do
         specify { expect { LimesurveyRails.wrong_name_method }.to raise_error }
       end
       context "when it's session key becomes invalid/expired" do
-        before(:each) do
+        before do
           LimesurveyRails.session_key = 'wrong_session_key'
         end
         its(:connected?) { is_expected.to be true }
@@ -94,7 +94,7 @@ describe LimesurveyRails, :main => true do
       end
     end
     context "when it's configurated with continuous connection" do
-      before(:each) do
+      before do
         LimesurveyRails.configure do |config|
           config.auto_connection = true
         end
@@ -104,7 +104,7 @@ describe LimesurveyRails, :main => true do
         specify { expect(LimesurveyRails.connected?(true)).to be false }
       end
       context "when it is connected" do
-        before(:each) do
+        before do
           LimesurveyRails.connect
         end
         its(:connected?) { is_expected.to be true }
@@ -112,7 +112,7 @@ describe LimesurveyRails, :main => true do
           specify { expect(LimesurveyRails.connected?(true)).to be true }
         end
         context "when it's session key becomes invalid/expired" do
-          before(:each) do
+          before do
             LimesurveyRails.session_key = 'wrong_session_key'
           end
           its(:connected?) { is_expected.to be true }

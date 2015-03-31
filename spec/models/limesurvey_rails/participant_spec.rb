@@ -3,13 +3,13 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 module LimesurveyRails
   describe TestModel, :participant do
 
-    before(:all) do
+    before(:context) do
       configure_and_connect
       remove_all_test_surveys
       # reset_models # uncomment to run all suite test in one single run
       @test_survey_id = get_brand_new_test_survey_id(:activate_tokens => true)
     end 
-    after(:all) { remove_all_test_surveys }
+    after(:context) { remove_all_test_surveys }
 
     subject { TestModel }
 
@@ -17,13 +17,13 @@ module LimesurveyRails
     let(:test_survey) { Survey.find(@test_survey_id) }
 
     context "when not initialized for being a participant" do
-      before(:each) { reset_models }
+      before { reset_models }
       its(:is_a_limesurvey_participant_class?) { is_expected.to be false }
     end
     
     describe ".is_a_limesurvey_participant" do
       context "with no options" do
-        before(:all) do
+        before(:context) do
           reset_models
           TestModel.is_a_limesurvey_participant
         end
@@ -37,7 +37,7 @@ module LimesurveyRails
         its(:limesurvey_participant_lastname_attr) { is_expected.to be_nil }
       end
       context "with options :attribute_1_attr => 'other_id' " do
-        before(:all) do
+        before(:context) do
           reset_models
           TestModel.is_a_limesurvey_participant(:attribute_1_attr => 'other_id')
         end
@@ -45,7 +45,7 @@ module LimesurveyRails
         its(:limesurvey_participant_attribute_1_attr) { is_expected.to eq 'other_id' }
       end
       context "with options :email_attr => 'email_address', :firstname_attr => 'name', :lastname_attr => 'surname'  " do
-        before(:all) do
+        before(:context) do
           reset_models
           TestModel.is_a_limesurvey_participant(:email_attr => 'email_address', :firstname_attr => 'name', :lastname_attr => 'surname')
         end
@@ -58,7 +58,7 @@ module LimesurveyRails
 
     context "when participant model is initialized with options: :attribute_1_attr => 'extra_id', :email_attr => 'email_address', :firstname_attr => 'name', :lastname_attr => 'surname'" do
       
-      before(:all) { TestModel.is_a_limesurvey_participant(:attribute_1_attr => "extra_id", :email_attr => 'email_address', :firstname_attr => 'name', :lastname_attr => 'surname') }
+      before(:context) { TestModel.is_a_limesurvey_participant(:attribute_1_attr => "extra_id", :email_attr => 'email_address', :firstname_attr => 'name', :lastname_attr => 'surname') }
       
       let(:a_participant) { FactoryGirl.create(:test_model) }
 
@@ -68,7 +68,7 @@ module LimesurveyRails
             expect(a_participant.add_to_survey(test_survey)).to be true
           end
           context "and #{described_class} instance is already registered" do
-            before(:each) do
+            before do
               a_participant.add_to_survey(test_survey)
             end
             it "returns false" do
@@ -85,7 +85,7 @@ module LimesurveyRails
       describe "#remove_from_survey(arg)" do
         context "when arg is an existing survey object" do
           context "when #{described_class} instance is already registered" do
-            before(:each) do
+            before do
               a_participant.add_to_survey(test_survey)
             end
             it "returns true" do
@@ -104,8 +104,8 @@ module LimesurveyRails
           end
         end
       end
-      describe "#surveys", :wip do
-        before(:all) do
+      describe "#surveys" do
+        before(:context) do
           @another_test_survey_id = get_brand_new_test_survey_id(:activate_tokens => true)
           @another_more_test_survey_id = get_brand_new_test_survey_id(:activate_tokens => true)
         end
@@ -115,7 +115,7 @@ module LimesurveyRails
           expect(a_participant.surveys).to be_empty
         end
         context "when has added to a survey" do
-          before(:each) { SurveyParticipation.create!(:survey_id => test_survey.id, :participant_id => a_participant.id ) }
+          before { SurveyParticipation.create!(:survey_id => test_survey.id, :participant_id => a_participant.id ) }
           it "returns an array with one element and that element containing a Survey object" do
             expect(a_participant.surveys.size).to eq 1 and 
             expect(a_participant.surveys.first).to be_kind_of(Survey)
@@ -137,7 +137,7 @@ module LimesurveyRails
             end
           end
           context "when has added to another survey" do
-            before(:each) { SurveyParticipation.create(:survey_id => another_test_survey.id, :participant_id => a_participant.id ) }
+            before { SurveyParticipation.create(:survey_id => another_test_survey.id, :participant_id => a_participant.id ) }
             it "returns an array with two elements" do
               expect(a_participant.surveys.map(&:id)).to match_array [test_survey.id, another_test_survey.id]
             end
@@ -159,7 +159,7 @@ module LimesurveyRails
     end
 
     describe "#destroy" do
-      before(:each) do
+      before do
         reset_models
         TestModel.is_a_limesurvey_participant(opts)
         test_survey.add_participant!(a_participant)

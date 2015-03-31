@@ -30,7 +30,7 @@ but there are many options ..
 
 ## Test
 
-Because of [this](http://stackoverflow.com/posts/27786703) it's better run test separately (in a real scenario the *participant model* is expected to be initialized only once):
+Because of [this](http://stackoverflow.com/questions/22667421/test-rails-model-with-several-initializations-with-rspec) it's better run test separately (in a real scenario the *participant model* is expected to be initialized only once):
 
     rake spec[main] && rake spec[survey] && rake spec[participant] && rake spec[participation]
 

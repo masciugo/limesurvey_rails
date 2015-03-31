@@ -3,12 +3,12 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 module LimesurveyRails
 
   describe Survey, :survey do
-    before(:all) do
+    before(:context) do
       configure_and_connect
       # reset_models # uncomment to run all suite test in one single run
       TestModel.is_a_limesurvey_participant :attribute_1_attr => "extra_id", :email_attr => 'email_address', :firstname_attr => 'name', :lastname_attr => 'surname'
     end
-    after(:all) { remove_all_test_surveys }
+    after(:context) { remove_all_test_surveys }
 
     describe ".add(title,lang)" do
       it "returns true" do
@@ -21,12 +21,12 @@ module LimesurveyRails
     end
 
     describe ".all" do
-      before(:each) { remove_all_test_surveys }
+      before { remove_all_test_surveys }
       it "returns an empty array" do
         expect(Survey.all).to be_empty
       end
       context "when 3 surveys are present in the db" do
-        before(:each) { 3.times{|i| Survey.add("test survey number #{i}",'en') } }
+        before { 3.times{|i| Survey.add("test survey number #{i}",'en') } }
         it "returns an Array" do
           expect(Survey.all).to be_an_instance_of(Array)
         end
@@ -41,7 +41,7 @@ module LimesurveyRails
 
     context "when a test survey is present in the database" do
 
-      before(:each) { remove_all_test_surveys; @test_survey_id = get_brand_new_test_survey_id(:activate_tokens => true) }
+      before { remove_all_test_surveys; @test_survey_id = get_brand_new_test_survey_id(:activate_tokens => true) }
     
       let(:test_survey) { Survey.find(@test_survey_id) }
 
@@ -85,8 +85,8 @@ module LimesurveyRails
           expect(test_survey.destroy).to be true
         end
         context "when the survey has participants" do
-          # before(:all) { reset_models; TestModel.is_a_limesurvey_participant }
-          before(:each) do
+          # before(:context) { reset_models; TestModel.is_a_limesurvey_participant }
+          before do
             FactoryGirl.create_list(:test_model,3)
             TestModel.all.each{ |tm| FactoryGirl.create(:limesurvey_rails_survey_participation, :survey_id => test_survey.id, :participant_id => tm.id ) }
           end
@@ -104,7 +104,7 @@ module LimesurveyRails
         describe "#add_participant!(a_participant)" do
           it_should_behave_like "adding a participant", 'add_participant!'
           context "when a_participant is already registered" do
-            before(:each) do
+            before do
               test_survey.add_participant!(a_participant)
             end
             it "raise ActiveRecord::RecordInvalid" do
@@ -121,7 +121,7 @@ module LimesurveyRails
         describe "#add_participant(a_participant)" do
           it_should_behave_like "adding a participant", 'add_participant'
           context "when a_participant is already registered" do
-            before(:each) do
+            before do
               test_survey.add_participant(a_participant)
             end
             it "returns false" do
@@ -165,14 +165,14 @@ module LimesurveyRails
 
         context "when 3 participants are registered" do
           describe "#participants" do
-            before(:each) do
+            before do
               instances = FactoryGirl.create_list(:test_model,3)
               instances.each{ |tm| FactoryGirl.create(:limesurvey_rails_survey_participation, :survey_id => test_survey.id, :participant_id => tm.id ) }
             end
             subject { test_survey.reload }
             its(:participants) { is_expected.to match_ar_array TestModel.all}
             context "when a participant is missinig on Limesurvey" do
-              before(:each) do
+              before do
                 id_to_delete = LimesurveyRails.list_participants(test_survey.id).sample['tid']
                 LimesurveyRails.delete_participants(test_survey.id,[id_to_delete])
               end
@@ -183,7 +183,7 @@ module LimesurveyRails
 
         describe "#invite_participants!" do
           context "when 3 participants are registered with email defined" do
-            before(:each) do
+            before do
               instances = FactoryGirl.create_list(:test_model,3)
               instances.each{ |tm| FactoryGirl.create(:limesurvey_rails_survey_participation, :survey_id => test_survey.id, :participant_id => tm.id ) }
             end
@@ -192,7 +192,7 @@ module LimesurveyRails
             end
           end
           context "when email is missing for one of them" do
-            before(:each) do
+            before do
               instances = FactoryGirl.create_list(:test_model,2)
               instances << FactoryGirl.create(:test_model,:email_address => nil)
               instances.each{ |tm| FactoryGirl.create(:limesurvey_rails_survey_participation, :survey_id => test_survey.id, :participant_id => tm.id ) }
@@ -201,7 +201,7 @@ module LimesurveyRails
               expect(test_survey.invite_participants!).to eq [2,0]
             end
             describe "survey"  do
-              before(:each) { test_survey.invite_participants! }
+              before { test_survey.invite_participants! }
               subject { test_survey.reload }
             end
           end

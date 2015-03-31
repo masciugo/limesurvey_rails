@@ -3,12 +3,12 @@ module LimesurveyRails
 
     shared_examples "removing a participant" do |method|
       context "when they are regularly registered" do
-        before(:each) { test_survey.add_participant(a_participant) }
+        before { test_survey.add_participant(a_participant) }
         it "returns true" do
           expect(test_survey.send(method,a_participant)).to be true
         end
         describe "what happens on Limesurvey" do
-          before(:each) do
+          before do
             @deleted_tid = a_participant.survey_participations.for_survey(test_survey.id).token_id
             test_survey.send(method,a_participant)
           end
@@ -28,7 +28,7 @@ module LimesurveyRails
           expect(test_survey.send(method,a_participant)).to be true
         end
         describe "what happens on Limesurvey" do
-          before(:each) { test_survey.send(method,a_participant) }
+          before { test_survey.send(method,a_participant) }
           it "is present" do
             expect(LimesurveyRails.list_participants(test_survey.id).map { |p| p["tid"] }).to include(a_participant.survey_participations.for_survey(test_survey.id).token_id)
           end

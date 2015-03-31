@@ -5,13 +5,13 @@ module LimesurveyRails
     
     subject { SurveyParticipation }
 
-    before(:all) do
+    before(:context) do
       configure_and_connect
       @test_survey_id = get_brand_new_test_survey_id(:activate_tokens => true)
       # reset_models # uncomment to run all suite test in one single run
       TestModel.is_a_limesurvey_participant :attribute_1_attr => "extra_id", :email_attr => 'email_address', :firstname_attr => 'name', :lastname_attr => 'surname'
     end 
-    after(:all) { remove_all_test_surveys }
+    after(:context) { remove_all_test_surveys }
 
     let(:a_participant) { FactoryGirl.create(:test_model) }
     let(:test_survey) { Survey.find(@test_survey_id) }
@@ -19,7 +19,7 @@ module LimesurveyRails
     describe ".new" do
       describe "the new SurveyParticipation object" do
         context "when another record with the same survey_id and participant_id exist" do
-          before(:each) { SurveyParticipation.create(:survey_id => test_survey.id, :participant_id => a_participant.id ) }
+          before { SurveyParticipation.create(:survey_id => test_survey.id, :participant_id => a_participant.id ) }
           subject { SurveyParticipation.new(:survey_id => test_survey.id, :participant_id => a_participant.id ) }
           specify do
             subject.valid?
@@ -40,7 +40,7 @@ module LimesurveyRails
     end
 
     describe "callbacks beahvior" do
-      # before(:each) { LimesurveyRails.connect }
+      # before { LimesurveyRails.connect }
       let!(:a_participant) { FactoryGirl.create(:test_model) }
       let!(:test_survey) { Survey.find(@test_survey_id) }
       describe "#create!" do
@@ -51,7 +51,7 @@ module LimesurveyRails
           its(:url){ is_expected.to eq(LIMESURVEY_BASE_URL + "/survey/index/sid/#{ss.survey_id}/token/#{ss.token}/lang//newtest/Y") }
         end
         context "when something goes wrong with limesurvey add_participants call during the callback" do
-          before(:each) { LimesurveyRails.stub(:add_participants).and_raise }
+          before { LimesurveyRails.stub(:add_participants).and_raise }
           specify { expect { SurveyParticipation.create!(:survey_id => test_survey.id, :participant_id => a_participant.id ) }.to raise_error}
           it "doesn't create the SurveyParticipation object" do
             SurveyParticipation.create!(:survey_id => test_survey.id, :participant_id => a_participant.id ) rescue nil
@@ -59,21 +59,21 @@ module LimesurveyRails
           end
         end
         context "when something goes wrong with updating token_id attributes during the callback" do
-          before(:each) { SurveyParticipation.any_instance.stub(:save!).and_raise }
+          before { SurveyParticipation.any_instance.stub(:save!).and_raise }
           specify { expect { SurveyParticipation.create!(:survey_id => test_survey.id, :participant_id => a_participant.id ) }.to raise_error}
         end
       end
       describe "#destroy!" do
-        before(:each) { @ss = SurveyParticipation.create(:survey_id => test_survey.id, :participant_id => a_participant.id ) }
+        before { @ss = SurveyParticipation.create(:survey_id => test_survey.id, :participant_id => a_participant.id ) }
         context "when something goes wrong with limesurvey delete_participants call during the callback" do
-          before(:each) { LimesurveyRails.stub(:delete_participants).and_raise }
+          before { LimesurveyRails.stub(:delete_participants).and_raise }
           specify { expect { @ss.destroy }.to raise_error}
         end
       end
     end
 
     describe "limesurvey attributes" do
-      before(:each) { test_survey.add_participant!(a_participant) }
+      before { test_survey.add_participant!(a_participant) }
       let(:a_participant) { FactoryGirl.create(:test_model, :extra_id => "XX030459") }
       let(:ss) { a_participant.survey_participations.for_survey(test_survey.id) }
       ['email', 'firstname', 'lastname'].each do |a|
