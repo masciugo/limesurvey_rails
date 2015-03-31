@@ -5,10 +5,16 @@ rvm:
   - jruby-19mode
   - rbx-2
   - 2.1.5
+
 gemfile:
   - gemfiles/rails_3.gemfile
   - gemfiles/rails_4.gemfile
-script: "rake spec[main] && rake spec[survey] && rake spec[participant] && rake spec[participation]"
+before_script:
+  - "mysql -e 'create database test_limesurvey_rails;'"
+script: 
+  - bundle exec rake db:schema:load
+  - bundle exec rake db:test:prepare
+  - bundle exec "rake spec[main] && rake spec[survey] && rake spec[participant] && rake spec[participation]"
 matrix:
   fast_finish: true
   allow_failures:
