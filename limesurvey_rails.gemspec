@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'factory_girl_rails', '~> 4'
   spec.add_development_dependency 'sqlite3', '~> 1.3'
   spec.add_development_dependency 'appraisal'
+  spec.add_development_dependency 'gem-release'
 
   spec.add_development_dependency case RUBY_VERSION
   when /^1.9/

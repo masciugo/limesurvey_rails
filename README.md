@@ -1,4 +1,5 @@
 # LimesurveyRails
+[![Build Status](https://travis-ci.org/masciugo/limesurvey_rails.svg?branch=master)](https://travis-ci.org/masciugo/limesurvey_rails)
 
 A limesurvey plugin for Rails to make an ActiveRecord model able to participate to Limesurvey surveys
 
