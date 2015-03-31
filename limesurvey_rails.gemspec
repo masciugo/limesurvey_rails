@@ -18,12 +18,22 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency 'rails', '~> 3.2', '>= 3.2.16'
+  spec.add_runtime_dependency 'rails', '>= 3.2.16'
   spec.add_runtime_dependency 'limesurvey', '~> 1.0'
 
   spec.add_development_dependency 'rspec-rails', '~> 3.0'
   spec.add_development_dependency 'rspec-its', '~> 1.0'
   spec.add_development_dependency 'factory_girl_rails', '~> 4'
   spec.add_development_dependency 'sqlite3', '~> 1.3'
-  spec.add_development_dependency 'byebug', '~> 3.5'
+  spec.add_development_dependency 'appraisal'
+
+  spec.add_development_dependency case RUBY_VERSION
+  when /^1.9/
+    "debugger"
+  when /^2/
+    "byebug"
+  else
+    raise  
+  end
+
 end

@@ -1,10 +1,18 @@
 ENV["RAILS_ENV"] = "test"
 
-require File.expand_path("../dummy/config/environment.rb",  __FILE__)
+case RUBY_VERSION
+when /^1.9/
+  require "debugger"
+when /^2/
+  require "byebug"
+else
+  raise  
+end
+
+require File.expand_path("../#{ENV["dummy_app_name"]}/config/environment.rb",  __FILE__)
 require 'rspec/rails'
 require 'rspec/its'
 require 'factory_girl_rails'
-require 'byebug'
 
 Rails.backtrace_cleaner.remove_silencers!
 
@@ -16,7 +24,7 @@ ENGINE_RAILS_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '../'))
 Dir[File.join(ENGINE_RAILS_ROOT, "spec/support/**/*.rb")].each {|f| require f }
 
 # add factories paths just to be sure 
-FactoryGirl.definition_file_paths << Pathname.new(File.join(ENGINE_RAILS_ROOT,"spec/dummy/spec/factories"))
+FactoryGirl.definition_file_paths << Pathname.new(File.join(ENGINE_RAILS_ROOT,"spec/#{ENV["dummy_app_name"]}/spec/factories"))
 FactoryGirl.definition_file_paths << Pathname.new(File.join(ENGINE_RAILS_ROOT,"spec/factories"))
 FactoryGirl.definition_file_paths.uniq!
 FactoryGirl.reload
@@ -47,7 +55,7 @@ end
 RSpec::Matchers.define :match_ar_array do |expected|
   match do |actual|
     actual.sort_by!(&:id)
-    expected.sort_by!(&:id)
+    expected = expected.to_a.sort_by!(&:id)
     actual.map{|e| e.class.name } == expected.map{|e| e.class.name } and actual.map(&:id) == expected.map(&:id)
   end
 

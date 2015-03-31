@@ -13,8 +13,10 @@ rescue Bundler::BundlerError => e
   exit e.status_code
 end
 
+ENV["dummy_app_name"] = "dummy_rails_#{Bundler.load.specs.find{|g| g.name == 'rails'}.version.to_s.split('.').first}"
+
 # load tasks from dummy application
-APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
+APP_RAKEFILE = File.expand_path("../spec/#{ENV["dummy_app_name"]}/Rakefile", __FILE__)
 load 'rails/tasks/engine.rake'
 
 ###### RSpec stuff 

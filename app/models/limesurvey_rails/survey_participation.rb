@@ -3,7 +3,8 @@ module LimesurveyRails
 
     GET_PARTICIPANT_PROPERTY_ATTRIBUTES = %w{ attribute_1 tid completed language usesleft firstname blacklisted validfrom lastname sent validuntil email remindersent mpid emailstatus remindercount  }
 
-    attr_accessible :participant_id, :survey_id
+    attr_accessible :participant_id, :survey_id if Rails.version =~ /^3/
+ 
     attr_accessor *GET_PARTICIPANT_PROPERTY_ATTRIBUTES
 
     validates :participant_id, :uniqueness => {:scope => :survey_id}

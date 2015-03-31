@@ -4,13 +4,11 @@ rvm:
   - 1.9.3
   - jruby-19mode
   - rbx-2
-  - 2.0.0
   - 2.1.5
 gemfile:
-  - gemfiles/3.2.gemfile
-  - gemfiles/4.0.gemfile
-  - gemfiles/4.1.gemfile
-
+  - gemfiles/rails_3.gemfile
+  - gemfiles/rails_4.gemfile
+script: "rake spec[main] && rake spec[survey] && rake spec[participant] && rake spec[participation]"
 matrix:
   fast_finish: true
   allow_failures:

@@ -186,8 +186,8 @@ module LimesurveyRails
           expect(LimesurveyRails.list_participants(test_survey.id).map { |p| p["tid"] }).to_not include(tid)
         end
       end
-      context "when participant model is initialized with option: :dependent_participations => :restrict"  do
-        let(:opts){{:dependent_participations => :restrict}}
+      context "when participant model is initialized with option: :dependent_participations => :restrict", :wip  do
+        let(:opts){{:dependent_participations => (Rails.version =~ /^4/ ? :restrict_with_exception : :restrict)}}
         specify { expect { a_participant.destroy }.to raise_error(ActiveRecord::DeleteRestrictionError) }
       end
     end

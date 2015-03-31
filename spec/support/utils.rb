@@ -31,7 +31,7 @@ def reset_models
 
   if Object.const_defined? :TestModel
     Object.send(:remove_const,:TestModel) 
-    load File.join(ENGINE_RAILS_ROOT,'spec','dummy','app','models','test_model.rb')
+    load File.join(ENGINE_RAILS_ROOT,'spec',ENV["dummy_app_name"],'app','models','test_model.rb')
     # puts ">>>> TestModel.object_id: #{TestModel.object_id}"
   end
   
@@ -50,7 +50,7 @@ def reset_models
   # ActiveSupport::Dependencies.remove_constant("TestModel")
   # load File.join(ENGINE_RAILS_ROOT,'lib','limesurvey_rails','participant.rb')
   # load File.join(ENGINE_RAILS_ROOT,'app','models','limesurvey_rails','survey_participation.rb')
-  # load File.join(ENGINE_RAILS_ROOT,'spec','dummy','app','models','test_model.rb')
+  # load File.join(ENGINE_RAILS_ROOT,'spec',ENV["dummy_app_name"],'app','models','test_model.rb')
   # puts "after LimesurveyRails::Participant         #{LimesurveyRails::Participant.object_id}"
   # puts "after TestModel                            #{TestModel.object_id}"
   # puts "after LimesurveyRails::SurveyParticipation #{LimesurveyRails::SurveyParticipation.object_id}"

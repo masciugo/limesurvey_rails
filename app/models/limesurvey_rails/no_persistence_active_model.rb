@@ -1,6 +1,6 @@
 module LimesurveyRails
   class NoPersistenceActiveModel
-    include ActiveModel::MassAssignmentSecurity
+    include ActiveModel::MassAssignmentSecurity if Rails.version =~ /^3/
     include ActiveModel::Validations  
     include ActiveModel::Conversion  
     include ActiveModel::AttributeMethods
